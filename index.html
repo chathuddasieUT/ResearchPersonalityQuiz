@@ -1088,7 +1088,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>${escapeXml(shareCardTitle.textContent || 'Researcher Personality Type')}</title>
   <style>
-    @page { size: A4 landscape; margin: 0; }
+    // @page { size: A4 landscape; margin: 0; }
+    @page {
+      size: auto;
+      margin: 12mm;
+    }
     * { box-sizing: border-box; }
     html, body {
       margin: 0;
@@ -1104,14 +1108,19 @@
       align-items: center;
       justify-content: center;
     }
+    // .page {
+    //   width: 297mm;
+    //   height: 210mm;
+    //   background: linear-gradient(135deg, #0a4fbf 0%, #1567e5 45%, #0b57d0 100%);
+    //   padding: 16mm;
+    //   display: flex;
+    //   align-items: stretch;
+    //   justify-content: center;
+    // }
     .page {
-      width: 297mm;
-      height: 210mm;
-      background: linear-gradient(135deg, #0a4fbf 0%, #1567e5 45%, #0b57d0 100%);
-      padding: 16mm;
-      display: flex;
-      align-items: stretch;
-      justify-content: center;
+      width: 100%;
+      height: auto;
+      min-height: 100vh;
     }
     .card {
       width: 100%;
