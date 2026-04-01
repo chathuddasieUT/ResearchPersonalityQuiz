@@ -538,12 +538,6 @@
             <h3>Your trait profile</h3>
             <div class="trait-list" id="traitList"></div>
           </div>
-          <div>
-            <h3>All available types</h3>
-            <div class="all-types-list">
-              <div class="alt-types" id="altTypes"></div>
-            </div>
-          </div>
         </div>
 
         <p class="small-note" id="scoreSummary"></p>
@@ -782,7 +776,7 @@
     const resultCode = document.getElementById('resultCode');
     const resultDescription = document.getElementById('resultDescription');
     const traitList = document.getElementById('traitList');
-    const altTypes = document.getElementById('altTypes');
+    // const altTypes = document.getElementById('altTypes');
     const scoreSummary = document.getElementById('scoreSummary');
     const shareCardModal = document.getElementById('shareCardModal');
     const shareCardBackdrop = document.getElementById('shareCardBackdrop');
@@ -1024,13 +1018,13 @@
         traitList.appendChild(item);
       });
 
-      altTypes.innerHTML = '';
-      allTypes.forEach((type) => {
-        const item = document.createElement('div');
-        item.className = 'alt-type-item';
-        item.innerHTML = `<strong>${type.title}</strong><span>${type.code}</span>`;
-        altTypes.appendChild(item);
-      });
+      // altTypes.innerHTML = '';
+      // allTypes.forEach((type) => {
+      //   const item = document.createElement('div');
+      //   item.className = 'alt-type-item';
+      //   item.innerHTML = `<strong>${type.title}</strong><span>${type.code}</span>`;
+      //   altTypes.appendChild(item);
+      // });
 
       const summaryPieces = Object.entries(axisResults).map(
         ([, data]) => `${data.dominant} over ${data.opposite} (${Math.round((data.displayStrength / 5) * 100)}%)`
