@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Researcher Personality Quiz</title>
+  <style>
+    :root {
+      --bg: #0b57d0;
+      --panel: rgba(255, 255, 255, 0.12);
+      --panel-strong: rgba(255, 255, 255, 0.18);
+      --text: #ffffff;
+      --muted: rgba(255, 255, 255, 0.82);
+      --shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #0b57d0 0%, #1d73ea 100%);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    .app {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 20px 56px;
+    }
+
+    .card {
+      background: var(--panel);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 28px;
+    }
+
+    .hero { margin-bottom: 28px; }
+
+    .eyebrow {
+      font-size: 0.92rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    h1, h2, h3 {
+      margin: 0;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      line-height: 1.05;
+      margin-bottom: 14px;
+    }
+
+    h2 {
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      margin-bottom: 10px;
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      margin-bottom: 8px;
+    }
+
+    p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .start-screen, .quiz-screen, .results-screen { display: none; }
+    .active { display: block; }
+
+    .top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+    }
+
+    .progress-wrap {
+      flex: 1;
+      min-width: 220px;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      background: rgba(255, 255, 255, 0.18);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: rgba(255, 255, 255, 0.96);
+      transition: width 0.25s ease;
+    }
+
+    .button {
+      border: none;
+      border-radius: 999px;
+      padding: 12px 18px;
+      font-size: 0.98rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.18s ease, opacity 0.18s ease, background 0.18s ease;
+    }
+
+    .button:hover { transform: translateY(-1px); }
+
+    .button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .button-primary {
+      background: #ffffff;
+      color: #0b57d0;
+    }
+
+    .button-secondary {
+      background: rgba(255, 255, 255, 0.14);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .question-card { padding: 32px; }
+
+    .question-number {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .question-text {
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 24px;
+      color: var(--text);
+    }
+
+    .anchors {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    .anchor-side {
+      max-width: 40%;
+      font-size: 1rem;
+    }
+
+    .anchor-side.right {
+      text-align: right;
+    }
+
+    .scale-wrap { padding: 20px 0 8px; }
+
+    .scale {
+      display: grid;
+      grid-template-columns: repeat(11, 1fr);
+      gap: 10px;
+      align-items: start;
+    }
+
+    .scale-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .scale-option input[type="radio"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.82);
+      background: transparent;
+      cursor: pointer;
+      margin: 0;
+      transition: transform 0.16s ease, background 0.16s ease, box-shadow 0.16s ease, opacity 0.16s ease;
+    }
+
+    .scale-option input[type="radio"]:hover { transform: scale(1.08); }
+
+    .scale-option input[type="radio"]:checked {
+      box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.16);
+    }
+
+    .scale-option input[data-strength="0"] { background: rgba(255,255,255,0.00); }
+    .scale-option input[data-strength="1"] { background: rgba(255,255,255,0.18); }
+    .scale-option input[data-strength="2"] { background: rgba(255,255,255,0.34); }
+    .scale-option input[data-strength="3"] { background: rgba(255,255,255,0.52); }
+    .scale-option input[data-strength="4"] { background: rgba(255,255,255,0.74); }
+    .scale-option input[data-strength="5"] { background: rgba(255,255,255,1.00); }
+
+    .scale-option label {
+      font-size: 0.88rem;
+      color: transparent;
+      user-select: none;
+      height: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .value-display {
+      margin-top: 18px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.1);
+      display: inline-block;
+      font-weight: 700;
+      color: var(--text);
+      min-height: 50px;
+    }
+
+    .nav-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 22px;
+      margin-top: 20px;
+    }
+
+    .type-badge {
+      display: inline-block;
+      margin: 18px 0 14px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      font-weight: 800;
+      letter-spacing: 0.03em;
+    }
+
+    .result-title {
+      font-size: clamp(1.7rem, 3vw, 2.5rem);
+      margin-bottom: 10px;
+    }
+
+    .trait-list, .alt-types {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .trait-item, .alt-type-item {
+      background: var(--panel-strong);
+      border-radius: 16px;
+      padding: 14px 16px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .trait-item strong, .alt-type-item strong {
+      display: block;
+      font-size: 1rem;
+      margin-bottom: 4px;
+      color: var(--text);
+    }
+
+    .all-types-list {
+      max-height: 700px;
+      overflow: auto;
+      padding-right: 6px;
+    }
+
+    .foot-actions {
+      margin-top: 22px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .small-note {
+      margin-top: 16px;
+      font-size: 0.95rem;
+    }
+
+    .share-card-modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 30;
+    }
+
+    .share-card-modal.open { display: flex; }
+
+    .share-card-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(4, 16, 40, 0.52);
+      backdrop-filter: blur(8px);
+    }
+
+    .share-card-panel {
+      position: relative;
+      z-index: 1;
+      width: min(100%, 760px);
+      padding: 22px;
+    }
+
+    .share-card {
+      border-radius: 28px;
+      padding: 20px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.08) 100%);
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: var(--shadow);
+      margin-top: 6px;
+    }
+
+    .share-card-inner {
+      min-height: 420px;
+      border-radius: 22px;
+      padding: 28px;
+      background: linear-gradient(180deg, #0b57d0 0%, #1567e5 48%, #0b57d0 100%);
+      border: 1px solid rgba(255,255,255,0.18);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .share-kicker {
+      font-size: 0.92rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: rgba(255,255,255,0.84);
+    }
+
+    .share-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 900;
+      line-height: 1.02;
+      color: #fff;
+    }
+
+    .share-code {
+      display: inline-block;
+      width: fit-content;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.18);
+      font-weight: 800;
+      letter-spacing: 0.05em;
+    }
+
+    .share-description {
+      max-width: 52ch;
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.92);
+    }
+
+    .share-traits {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .share-trait-pill {
+      padding: 10px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.18);
+      font-size: 0.94rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .share-scores {
+      margin-top: 8px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: rgba(255,255,255,0.86);
+    }
+
+    .share-site {
+      margin-top: 6px;
+      font-size: 0.96rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.86);
+      letter-spacing: 0.02em;
+    }
+
+    .share-site a {
+      color: #ffffff;
+      text-decoration: none;
+    }
+
+    @media (max-width: 760px) {
+      .app { padding: 24px 14px 40px; }
+      .card, .question-card { padding: 22px; }
+      .results-grid { grid-template-columns: 1fr; }
+      .scale { gap: 6px; }
+      .scale-option input[type="radio"] { width: 24px; height: 24px; }
+      .anchor-side { max-width: 46%; font-size: 0.92rem; }
+      .all-types-list { max-height: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <section id="startScreen" class="start-screen active">
+      <div class="card hero">
+        <div class="eyebrow">Research Style Quiz</div>
+        <h1>Discover your researcher personality type.</h1>
+        <p>
+          Choose the point on each range that feels most like you. There are no better or worse types. Every research style has its place, and researchers often need to adapt based on the situation.
+        </p>
+        <div class="foot-actions">
+          <button class="button button-primary" id="startButton">Start Quiz</button>
+          <button class="button button-secondary" id="learnButton">Learn what this test means</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="learnScreen" class="start-screen">
+      <div class="card">
+        <div class="eyebrow">About this test</div>
+        <h2>Understanding researcher personalities</h2>
+
+        <p style="margin-bottom:16px;">
+          This test reflects how you approach research across five areas: planning, reading, experimentation, publication, and specialization.
+        </p>
+
+        <p style="margin-bottom:16px;">
+          Both sides of each dimension are valuable. Research thrives on different styles, from careful planning to exploration, from deep focus to broad scanning.
+        </p>
+
+        <p style="margin-bottom:16px;">
+          Most people lean one way, but strong researchers adapt when needed. Being flexible in how you work is a real advantage.
+        </p>
+
+        <p style="margin-bottom:16px;">
+          This also matters when choosing a lab or mentor. Success often depends on how well your working style fits the environment.
+        </p>
+
+        <p style="margin-bottom:16px;">
+          Use this as a guide, not a rule. What matters most is the science. If the work excites you, pursue it, while staying aware of how you and your environment work together.
+        </p>
+
+        <div class="foot-actions">
+          <button class="button button-primary" id="backToQuizButton">Start Quiz</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="quizScreen" class="quiz-screen">
+      <div class="top-row">
+        <div class="progress-wrap">
+          <div class="progress-label">
+            <span id="progressText">Question 1 of 25</span>
+            <span id="progressPercent">4%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card question-card">
+        <div class="question-number" id="questionNumber">Planning Style</div>
+        <div class="question-text" id="questionText"></div>
+
+        <div class="anchors">
+          <span class="anchor-side" id="leftAnchor"></span>
+          <span class="anchor-side right" id="rightAnchor"></span>
+        </div>
+
+        <div class="scale-wrap">
+          <div class="scale" id="scale"></div>
+        </div>
+
+        <div class="value-display" id="valueDisplay">Select the point on the range that resonates with you most.</div>
+
+        <div class="nav-row">
+          <button class="button button-secondary" id="prevButton">Previous</button>
+          <button class="button button-primary" id="nextButton">Next</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="resultsScreen" class="results-screen">
+      <div class="card">
+        <div class="eyebrow">Your Result</div>
+        <h2 class="result-title" id="resultTitle"></h2>
+        <div class="type-badge" id="resultCode"></div>
+        <p id="resultDescription"></p>
+
+        <div class="results-grid">
+          <div>
+            <h3>Your trait profile</h3>
+            <div class="trait-list" id="traitList"></div>
+          </div>
+          <div>
+            <h3>All available types</h3>
+            <div class="all-types-list">
+              <div class="alt-types" id="altTypes"></div>
+            </div>
+          </div>
+        </div>
+
+        <p class="small-note" id="scoreSummary"></p>
+
+        <div class="foot-actions">
+          <button class="button button-secondary" id="shareCardButton">Open Share Card</button>
+          <button class="button button-secondary" id="downloadCardButton">Save Share Card as PDF</button>
+          <button class="button button-primary" id="retakeButton">Retake Quiz</button>
+        </div>
+
+        <div class="share-card-modal" id="shareCardModal" aria-hidden="true">
+          <div class="share-card-backdrop" id="shareCardBackdrop"></div>
+          <div class="share-card-panel card">
+            <div class="top-row" style="margin-bottom: 18px;">
+              <h3>Result Card</h3>
+              <button class="button button-secondary" id="closeShareCardButton">Close</button>
+            </div>
+            <div class="share-card" id="shareCard">
+              <div class="share-card-inner">
+                <div class="share-kicker">Researcher Personality Type</div>
+                <div class="share-title" id="shareCardTitle"></div>
+                <div class="share-code" id="shareCardCode"></div>
+                <div class="share-description" id="shareCardDescription"></div>
+                <div class="share-traits" id="shareCardTraits"></div>
+                <div class="share-scores" id="shareCardScores"></div>
+                <div class="share-site"><a href="https://www.ResearcherPersonalityType.com" target="_blank" rel="noopener noreferrer">Take the quiz at www.ResearcherPersonalityType.com</a></div>
+              </div>
+            </div>
+            <p class="small-note">Use the PDF button to open your result card, then choose Print → Save as PDF in your browser.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const questions = [
+      { id: 'plan_1', axis: 'planning', category: 'Planning Style', text: 'When starting a new research project, where do you naturally fall?', left: 'Plan everything first', right: 'Start quickly and adapt as I go' },
+      { id: 'plan_2', axis: 'planning', category: 'Planning Style', text: 'If a project feels unclear, what is your instinct?', left: 'Define structure before acting', right: 'Jump in and learn by doing' },
+      { id: 'plan_3', axis: 'planning', category: 'Planning Style', text: 'Which workflow feels more like you?', left: 'Structured and pre-thought', right: 'Flexible and evolving' },
+      { id: 'plan_4', axis: 'planning', category: 'Planning Style', text: 'What makes you feel more comfortable?', left: 'Knowing the path ahead', right: 'Exploring without a fixed path' },
+      { id: 'plan_5', axis: 'planning', category: 'Planning Style', text: 'When things go wrong, what do you lean toward?', left: 'Rework the plan', right: 'Try a new direction immediately' },
+      { id: 'read_1', axis: 'reading', category: 'Reading Style', text: 'When reviewing literature, where do you usually land?', left: 'Read many papers briefly', right: 'Read a few papers deeply' },
+      { id: 'read_2', axis: 'reading', category: 'Reading Style', text: 'Which kind of reading feels more productive?', left: 'Broad overview of many ideas', right: 'Deep understanding of a few ideas' },
+      { id: 'read_3', axis: 'reading', category: 'Reading Style', text: 'What best describes your reading habit?', left: 'Constant scanning for useful ideas', right: 'Intensive focus on selected papers' },
+      { id: 'read_4', axis: 'reading', category: 'Reading Style', text: 'When you find a relevant paper, what do you do?', left: 'Extract the key point and move on', right: 'Study methods, results, and details carefully' },
+      { id: 'read_5', axis: 'reading', category: 'Reading Style', text: 'You feel most prepared when you:', left: 'Cover a wide range of work', right: 'Master a small set of important work' },
+      { id: 'exp_1', axis: 'experiments', category: 'Experimentation Style', text: 'In research, what do you naturally emphasize?', left: 'Run many experiments', right: 'Analyze fewer experiments more deeply' },
+      { id: 'exp_2', axis: 'experiments', category: 'Experimentation Style', text: 'When results are unclear, you usually:', left: 'Generate more results', right: 'Spend longer interpreting what you have' },
+      { id: 'exp_3', axis: 'experiments', category: 'Experimentation Style', text: 'Which approach fits you better?', left: 'Fast trial-and-error iteration', right: 'Careful reasoning and evaluation' },
+      { id: 'exp_4', axis: 'experiments', category: 'Experimentation Style', text: 'What gives you more satisfaction?', left: 'Creating new results', right: 'Understanding why results happened' },
+      { id: 'exp_5', axis: 'experiments', category: 'Experimentation Style', text: 'If time is limited, you are more likely to:', left: 'Try more ideas', right: 'Analyze current results more' },
+      { id: 'pub_1', axis: 'publication', category: 'Publication Style', text: 'Which publication style feels more natural?', left: 'Publish quickly and iterate', right: 'Publish slowly with strong polish' },
+      { id: 'pub_2', axis: 'publication', category: 'Publication Style', text: 'Your ideal paper is:', left: 'Timely and useful even if imperfect', right: 'Thorough and polished even if slower' },
+      { id: 'pub_3', axis: 'publication', category: 'Publication Style', text: 'When a result is “good enough,” what do you usually do?', left: 'Move toward publishing', right: 'Keep refining' },
+      { id: 'pub_4', axis: 'publication', category: 'Publication Style', text: 'Which statement feels more like you?', left: 'Done is better than perfect', right: 'Quality matters more than speed' },
+      { id: 'pub_5', axis: 'publication', category: 'Publication Style', text: 'You feel best when:', left: 'You have several outputs moving', right: 'Each output is highly refined' },
+      { id: 'spec_1', axis: 'specialization', category: 'Specialization Style', text: 'How are your research interests usually distributed?', left: 'Deeply focused on one area', right: 'Spread across multiple areas' },
+      { id: 'spec_2', axis: 'specialization', category: 'Specialization Style', text: 'What goal fits you better?', left: 'Become an expert in one niche', right: 'Be capable across many domains' },
+      { id: 'spec_3', axis: 'specialization', category: 'Specialization Style', text: 'Which best describes your curiosity?', left: 'Deep and narrow', right: 'Broad and wide-ranging' },
+      { id: 'spec_4', axis: 'specialization', category: 'Specialization Style', text: 'You feel more energized when:', left: 'Going deeper into the same topic', right: 'Exploring a new topic' },
+      { id: 'spec_5', axis: 'specialization', category: 'Specialization Style', text: 'Your long-term research aim is closer to:', left: 'Master a specific field', right: 'Connect ideas across fields' }
+    ];
+
+    const axes = {
+      planning: { leftName: 'Architect', rightName: 'Explorer' },
+      reading: { leftName: 'Scanner', rightName: 'Diver' },
+      experiments: { leftName: 'Tinkerer', rightName: 'Interpreter' },
+      publication: { leftName: 'Launcher', rightName: 'Craftsman' },
+      specialization: { leftName: 'Focused', rightName: 'Polymath' }
+    };
+
+    const customTypeProfiles = {
+      'A-S-T-L-P': {
+        title: 'The Strategic Builder',
+        description: 'You like clear structure, but within that structure you move fast, test often, and build momentum across a broad range of topics.'
+      },
+      'A-S-T-L-F': {
+        title: 'The Systematic Prototyper',
+        description: 'You plan broad experiments with a narrow goal. You iterate quickly to find the single best solution within a structured framework.'
+      },
+      'A-S-T-C-P': {
+        title: 'The Master Planner',
+        description: 'You map out wide-ranging projects with meticulous detail, testing possibilities thoroughly before producing a polished, multi-faceted result.'
+      },
+      'A-S-T-C-F': {
+        title: 'The Precision Architect',
+        description: 'You design comprehensive plans for specialized problems, testing every variable to ensure the final, focused output is flawless.'
+      },
+      'A-S-I-L-P': {
+        title: 'The Theoretical Mapmaker',
+        description: 'You plan broad surveys of literature and data, extracting high-level meaning quickly to stay ahead of emerging trends across fields.'
+      },
+      'A-S-I-L-F': {
+        title: 'The Targeted Synthesizer',
+        description: 'You use a structured approach to scan wide sources, interpreting them quickly to solve a specific, high-stakes problem.'
+      },
+      'A-S-I-C-P': {
+        title: 'The Curated Polymath',
+        description: 'You enjoy the slow, deliberate process of gathering a vast library of ideas and weaving them into a refined, comprehensive worldview.'
+      },
+      'A-S-I-C-F': {
+        title: 'The Detailed Generalist',
+        description: 'You apply a structured, interpretative lens to a wide array of data, refining it until you’ve reached a polished conclusion on a specific topic.'
+      },
+      'A-D-T-L-P': {
+        title: 'The Versatile Deep-Diver',
+        description: 'You plan deep investigations but keep them experimental, moving quickly between different profound topics to see how they connect.'
+      },
+      'A-D-T-L-F': {
+        title: 'The Direct Experimentalist',
+        description: 'You focus on a single deep niche with a clear plan, using rapid testing to push the boundaries of what is known in your specialty.'
+      },
+      'A-D-T-C-P': {
+        title: 'The Technical Polymath',
+        description: 'You balance disciplined planning with active empirical testing. You care about depth and quality while connecting specialized dots.'
+      },
+      'A-D-T-C-F': {
+        title: 'The Precision Investigator',
+        description: 'You balance disciplined planning with active empirical testing. You care about depth and quality while still valuing concrete evidence.'
+      },
+      'A-D-I-L-P': {
+        title: 'The Conceptual Explorer',
+        description: 'You plan deep dives into various theories, interpreting their meaning quickly to find the next big "aha" moment across disciplines.'
+      },
+      'A-D-I-L-F': {
+        title: 'The Focused Theorist',
+        description: 'You prefer a structured, deep, and rapid interpretation of specific data, aiming to get your specialized insights into the world efficiently.'
+      },
+      'A-D-I-C-P': {
+        title: 'The Universal Scholar',
+        description: 'You value deep, structured thought and careful interpretation across many fields, aiming for a "Magnum Opus" that connects them all.'
+      },
+      'A-D-I-C-F': {
+        title: 'The Methodical Scholar',
+        description: 'You prefer thoughtful structure, deep reading, and careful interpretation. You are likely to produce rigorous work with a strong sense of depth, polish, and intellectual precision.'
+      },
+      'E-S-T-L-P': {
+        title: 'The Rapid Explorer',
+        description: 'You thrive on motion, discovery, and breadth. You learn by doing, scan widely for ideas, and move quickly from one promising direction to the next.'
+      },
+      'E-S-T-L-F': {
+        title: 'The Focused Scout',
+        description: 'You move fast and test ideas broadly, but always with the aim of finding a breakthrough for one specific, narrow problem.'
+      },
+      'E-S-T-C-P': {
+        title: 'The Experimental Polymath',
+        description: 'You learn by doing across many fields, but you don’t stop until the diverse experiments are refined into a high-quality, finished product.'
+      },
+      'E-S-T-C-F': {
+        title: 'The Refined Auditor',
+        description: 'You scan broadly for errors and test possibilities in real-time, focusing your energy on perfecting one specific, high-quality outcome.'
+      },
+      'E-S-I-L-P': {
+        title: 'The Agile Synthesist',
+        description: 'You range widely, connect ideas quickly, and synthesize patterns under uncertainty. You are especially strong in fast-moving, interdisciplinary work.'
+      },
+      'E-S-I-L-F': {
+        title: 'The Responsive Analyst',
+        description: 'You adapt your wide search as you go, interpreting data quickly to provide immediate, specialized answers to pressing questions.'
+      },
+      'E-S-I-C-P': {
+        title: 'The Holistic Curator',
+        description: 'You gather ideas from everywhere and take the time to interpret how they fit together into a beautiful, complete, and broad narrative.'
+      },
+      'E-S-I-C-F': {
+        title: 'The Interpretative Specialist',
+        description: 'You scan wide-ranging ideas and adapt your path, but ultimately focus on refining a singular, deep, and polished piece of interpretive work.'
+      },
+      'E-D-T-L-P': {
+        title: 'The Kinetic Generalist',
+        description: 'You dive deep into a topic through action, testing ideas rapidly before moving your momentum toward a new, equally deep area.'
+      },
+      'E-D-T-L-F': {
+        title: 'The Probing Specialist',
+        description: 'You immerse yourself in a niche, learning through trial and error. You value getting functional, deep results out the door as fast as possible.'
+      },
+      'E-D-T-C-P': {
+        title: 'The Intensive Craftsman',
+        description: 'You take an adaptive approach to deep problems, testing many paths but ultimately settling on a refined, multi-layered finished product.'
+      },
+      'E-D-T-C-F': {
+        title: 'The Dedicated Optimizer',
+        description: 'You go deep into one area, testing and re-testing through practice until you have crafted the most refined version of your specific vision.'
+      },
+      'E-D-I-L-P': {
+        title: 'The Intuitive Connector',
+        description: 'You dive deep into new ideas as they arise, interpreting their meaning on the fly and sharing those insights quickly with a broad audience.'
+      },
+      'E-D-I-L-F': {
+        title: 'The Insight Hunter',
+        description: 'You enter problems with openness, then go very deep. Your strength is turning ambiguity into nuanced understanding and rapid results.'
+      },
+      'E-D-I-C-P': {
+        title: 'The Philosophical Nomad',
+        description: 'You dive into profound topics without a map, taking the time to interpret and refine your thoughts into a broad, polished body of work.'
+      },
+      'E-D-I-C-F': {
+        title: 'The Patient Specialist',
+        description: 'You dive deep into one area with an adaptive mindset, interpreting findings slowly and refining them until the work is exceptionally strong.'
+      }
+    };
+
+    const genericDescriptions = {
+      Architect: 'You prefer a structured start, with thought and planning before action.',
+      Explorer: 'You prefer learning by doing and adapting as the work unfolds.',
+      Scanner: 'You like gathering a wide map of ideas from many sources.',
+      Diver: 'You prefer extracting depth and detail from a focused set of sources.',
+      Tinkerer: 'You gain momentum by testing many possibilities in practice.',
+      Interpreter: 'You gain clarity by studying outcomes carefully and extracting meaning.',
+      Launcher: 'You value speed, iteration, and getting useful work into the world quickly.',
+      Craftsman: 'You value refinement, completeness, and publishing only when the work feels strong.',
+      Focused: 'You are drawn to depth, specialization, and concentrated expertise.',
+      Polymath: 'You are energized by breadth, connection-making, and moderate fluency across many areas.'
+    };
+
+    let currentQuestion = 0;
+    let answers = new Array(questions.length).fill(null);
+
+    const startScreen = document.getElementById('startScreen');
+    const learnScreen = document.getElementById('learnScreen');
+    const quizScreen = document.getElementById('quizScreen');
+    const resultsScreen = document.getElementById('resultsScreen');
+    const questionNumber = document.getElementById('questionNumber');
+    const questionText = document.getElementById('questionText');
+    const leftAnchor = document.getElementById('leftAnchor');
+    const rightAnchor = document.getElementById('rightAnchor');
+    const scale = document.getElementById('scale');
+    const valueDisplay = document.getElementById('valueDisplay');
+    const prevButton = document.getElementById('prevButton');
+    const nextButton = document.getElementById('nextButton');
+    const progressText = document.getElementById('progressText');
+    const progressPercent = document.getElementById('progressPercent');
+    const progressFill = document.getElementById('progressFill');
+    const resultTitle = document.getElementById('resultTitle');
+    const resultCode = document.getElementById('resultCode');
+    const resultDescription = document.getElementById('resultDescription');
+    const traitList = document.getElementById('traitList');
+    const altTypes = document.getElementById('altTypes');
+    const scoreSummary = document.getElementById('scoreSummary');
+    const shareCardModal = document.getElementById('shareCardModal');
+    const shareCardBackdrop = document.getElementById('shareCardBackdrop');
+    const shareCardButton = document.getElementById('shareCardButton');
+    const closeShareCardButton = document.getElementById('closeShareCardButton');
+    const downloadCardButton = document.getElementById('downloadCardButton');
+    const shareCardTitle = document.getElementById('shareCardTitle');
+    const shareCardCode = document.getElementById('shareCardCode');
+    const shareCardDescription = document.getElementById('shareCardDescription');
+    const shareCardTraits = document.getElementById('shareCardTraits');
+    const shareCardScores = document.getElementById('shareCardScores');
+
+    document.getElementById('startButton').addEventListener('click', () => {
+      startScreen.classList.remove('active');
+      quizScreen.classList.add('active');
+      renderQuestion();
+    });
+
+    document.getElementById('learnButton').addEventListener('click', () => {
+      startScreen.classList.remove('active');
+      learnScreen.classList.add('active');
+    });
+
+    document.getElementById('backToQuizButton').addEventListener('click', () => {
+      learnScreen.classList.remove('active');
+      quizScreen.classList.add('active');
+      renderQuestion();
+    });
+
+    document.getElementById('retakeButton').addEventListener('click', retakeQuiz);
+    shareCardButton.addEventListener('click', openShareCard);
+    closeShareCardButton.addEventListener('click', closeShareCard);
+    shareCardBackdrop.addEventListener('click', closeShareCard);
+    downloadCardButton.addEventListener('click', downloadShareCard);
+    prevButton.addEventListener('click', goPrevious);
+    nextButton.addEventListener('click', goNext);
+
+    function getTypeCode(match) {
+      return [
+        match.planning[0],
+        match.reading[0],
+        match.experiments[0],
+        match.publication[0],
+        match.specialization[0]
+      ].join('-');
+    }
+
+    function getTypeLabel(match) {
+      return [
+        match.planning,
+        match.reading,
+        match.experiments,
+        match.publication,
+        match.specialization
+      ].join(' • ');
+    }
+
+    function buildDefaultDescription(match) {
+      return `A distinct blend of ${match.planning.toLowerCase()} planning, ${match.reading.toLowerCase()} reading, ${match.experiments.toLowerCase()} experimentation, ${match.publication.toLowerCase()} publication style, and ${match.specialization.toLowerCase()} specialization.`;
+    }
+
+    function generateAllTypes() {
+      const options = {
+        planning: [axes.planning.leftName, axes.planning.rightName],
+        reading: [axes.reading.leftName, axes.reading.rightName],
+        experiments: [axes.experiments.leftName, axes.experiments.rightName],
+        publication: [axes.publication.leftName, axes.publication.rightName],
+        specialization: [axes.specialization.leftName, axes.specialization.rightName]
+      };
+
+      const generatedTypes = [];
+      options.planning.forEach((planning) => {
+        options.reading.forEach((reading) => {
+          options.experiments.forEach((experiments) => {
+            options.publication.forEach((publication) => {
+              options.specialization.forEach((specialization) => {
+                const match = { planning, reading, experiments, publication, specialization };
+                const code = getTypeCode(match);
+                const custom = customTypeProfiles[code];
+                generatedTypes.push({
+                  code,
+                  title: custom ? custom.title : getTypeLabel(match),
+                  description: custom ? custom.description : buildDefaultDescription(match),
+                  match
+                });
+              });
+            });
+          });
+        });
+      });
+
+      return generatedTypes;
+    }
+
+    const allTypes = generateAllTypes();
+
+    function scoreTypeMatch(axisResults, type) {
+      let score = 0;
+      Object.keys(type.match).forEach((axis) => {
+        const actual = axisResults[axis].dominant;
+        if (actual === type.match[axis]) score += 1;
+        const avg = axisResults[axis].average;
+        const expectedRight = type.match[axis] === axes[axis].rightName;
+        score += expectedRight ? avg / 10 : (10 - avg) / 10;
+      });
+      return score;
+    }
+
+    function findBestTypes(axisResults) {
+      return allTypes
+        .map((type) => ({ ...type, fitScore: scoreTypeMatch(axisResults, type) }))
+        .sort((a, b) => b.fitScore - a.fitScore);
+    }
+
+    function renderQuestion() {
+      const q = questions[currentQuestion];
+      questionNumber.textContent = q.category;
+      questionText.textContent = q.text;
+      leftAnchor.textContent = q.left;
+      rightAnchor.textContent = q.right;
+      prevButton.disabled = currentQuestion === 0;
+      nextButton.textContent = currentQuestion === questions.length - 1 ? 'See Results' : 'Next';
+
+      scale.innerHTML = '';
+      for (let i = 0; i <= 10; i += 1) {
+        const option = document.createElement('div');
+        option.className = 'scale-option';
+
+        const input = document.createElement('input');
+        input.type = 'radio';
+        input.name = `question-${currentQuestion}`;
+        input.id = `q${currentQuestion}-${i}`;
+        input.value = i;
+        input.setAttribute('aria-label', `Range point ${i + 1} of 11`);
+        input.dataset.strength = String(Math.abs(i - 5));
+        input.checked = answers[currentQuestion] === i;
+        input.addEventListener('change', () => {
+          answers[currentQuestion] = i;
+          updateValueDisplay(i, q);
+        });
+
+        const label = document.createElement('label');
+        label.setAttribute('for', input.id);
+        label.textContent = i;
+
+        option.appendChild(input);
+        option.appendChild(label);
+        scale.appendChild(option);
+      }
+
+      updateValueDisplay(answers[currentQuestion], q);
+      updateProgress();
+    }
+
+    function updateValueDisplay(value, q) {
+      if (value === null || value === undefined) {
+        valueDisplay.textContent = 'Select the point on the range that resonates with you most.';
+        return;
+      }
+
+      if (value === 5) {
+        valueDisplay.textContent = `You chose a balanced point between “${q.left}” and “${q.right}.”`;
+      } else if (value < 5) {
+        valueDisplay.textContent = `You leaned more toward “${q.left}.”`;
+      } else {
+        valueDisplay.textContent = `You leaned more toward “${q.right}.”`;
+      }
+    }
+
+    function updateProgress() {
+      const percent = Math.round(((currentQuestion + 1) / questions.length) * 100);
+      progressText.textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
+      progressPercent.textContent = `${percent}%`;
+      progressFill.style.width = `${percent}%`;
+    }
+
+    function goPrevious() {
+      if (currentQuestion > 0) {
+        currentQuestion -= 1;
+        renderQuestion();
+      }
+    }
+
+    function goNext() {
+      if (answers[currentQuestion] === null) {
+        valueDisplay.textContent = 'Please choose the point on the range that fits you best before continuing.';
+        return;
+      }
+
+      if (currentQuestion < questions.length - 1) {
+        currentQuestion += 1;
+        renderQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function calculateAxisScores() {
+      const grouped = { planning: [], reading: [], experiments: [], publication: [], specialization: [] };
+      questions.forEach((q, index) => grouped[q.axis].push(answers[index]));
+
+      const result = {};
+      Object.keys(grouped).forEach((axis) => {
+        const values = grouped[axis];
+        const avg = values.reduce((sum, value) => sum + value, 0) / values.length;
+        const config = axes[axis];
+        const dominant = avg >= 5 ? config.rightName : config.leftName;
+        const opposite = avg >= 5 ? config.leftName : config.rightName;
+        const displayStrength = Math.abs(avg - 5);
+        result[axis] = { average: avg, dominant, opposite, displayStrength };
+      });
+      return result;
+    }
+
+    function buildGenericType(axisResults) {
+      const order = ['planning', 'reading', 'experiments', 'publication', 'specialization'];
+      return order.map((axis) => axisResults[axis].dominant).join(' – ');
+    }
+
+    function showResults() {
+      const axisResults = calculateAxisScores();
+      const ranked = findBestTypes(axisResults);
+      const best = ranked[0];
+
+      quizScreen.classList.remove('active');
+      resultsScreen.classList.add('active');
+
+      resultTitle.textContent = best ? best.title : buildGenericType(axisResults);
+      resultCode.textContent = best ? best.code : buildGenericType(axisResults);
+      resultDescription.textContent = best
+        ? best.description
+        : 'Your profile reflects how you balance planning, reading, experimentation, publication, and specialization as a researcher.';
+
+      traitList.innerHTML = '';
+      Object.entries(axisResults).forEach(([, data]) => {
+        const item = document.createElement('div');
+        item.className = 'trait-item';
+        item.innerHTML = `<strong>${data.dominant}</strong><span>${genericDescriptions[data.dominant]} Strength on this side: ${Math.round((data.displayStrength / 5) * 100)}%.</span>`;
+        traitList.appendChild(item);
+      });
+
+      altTypes.innerHTML = '';
+      allTypes.forEach((type) => {
+        const item = document.createElement('div');
+        item.className = 'alt-type-item';
+        item.innerHTML = `<strong>${type.title}</strong><span>${type.code}</span>`;
+        altTypes.appendChild(item);
+      });
+
+      const summaryPieces = Object.entries(axisResults).map(
+        ([, data]) => `${data.dominant} over ${data.opposite} (${Math.round((data.displayStrength / 5) * 100)}%)`
+      );
+      scoreSummary.textContent = `Your profile leans toward: ${summaryPieces.join(' • ')}.`;
+
+      renderShareCard(best, axisResults);
+    }
+
+    function renderShareCard(best, axisResults) {
+      const title = best ? best.title : buildGenericType(axisResults);
+      const code = best ? best.code : buildGenericType(axisResults);
+      const description = best
+        ? best.description
+        : 'A distinctive balance of planning, reading depth, experimentation, publication pace, and specialization.';
+
+      shareCardTitle.textContent = `I’m ${title}`;
+      shareCardCode.textContent = code;
+      shareCardDescription.textContent = description;
+      shareCardTraits.innerHTML = '';
+
+      Object.entries(axisResults).forEach(([, data]) => {
+        const pill = document.createElement('div');
+        pill.className = 'share-trait-pill';
+        pill.textContent = `${data.dominant} ${Math.round((data.displayStrength / 5) * 100)}%`;
+        shareCardTraits.appendChild(pill);
+      });
+
+      shareCardScores.textContent = scoreSummary.textContent;
+    }
+
+    function openShareCard() {
+      shareCardModal.classList.add('open');
+      shareCardModal.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeShareCard() {
+      shareCardModal.classList.remove('open');
+      shareCardModal.setAttribute('aria-hidden', 'true');
+    }
+
+    async function downloadShareCard() {
+      const printWindow = window.open('', '_blank', 'width=1200,height=900');
+      if (!printWindow) {
+        alert('Please allow pop-ups so the PDF card can open.');
+        return;
+      }
+
+      const traitPills = Array.from(shareCardTraits.children)
+        .map(function (node) {
+          return '<span class="pdf-pill">' + escapeXml(node.textContent || '') + '</span>';
+        })
+        .join('');
+
+      const scoreLine = scoreSummary.textContent || '';
+
+      const pdfHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${escapeXml(shareCardTitle.textContent || 'Researcher Personality Type')}</title>
+  <style>
+    @page { size: A4 landscape; margin: 0; }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      background: #0b57d0;
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      color: #ffffff;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .page {
+      width: 297mm;
+      height: 210mm;
+      background: linear-gradient(135deg, #0a4fbf 0%, #1567e5 45%, #0b57d0 100%);
+      padding: 16mm;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+    }
+    .card {
+      width: 100%;
+      height: 100%;
+      border-radius: 22px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: radial-gradient(circle at top right, rgba(255,255,255,0.14), transparent 28%), linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.08));
+      padding: 16mm;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 14mm;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.18);
+    }
+    .left, .right { display: flex; flex-direction: column; }
+    .kicker {
+      font-size: 11pt;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: rgba(255,255,255,0.82);
+      margin-bottom: 8mm;
+    }
+    .title {
+      font-size: 30pt;
+      line-height: 1.02;
+      font-weight: 900;
+      max-width: 9.5in;
+      margin-bottom: 5mm;
+    }
+    .code {
+      display: inline-block;
+      width: fit-content;
+      padding: 4mm 6mm;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.12);
+      font-size: 12pt;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      margin-bottom: 8mm;
+    }
+    .description {
+      font-size: 15pt;
+      line-height: 1.45;
+      color: rgba(255,255,255,0.95);
+      max-width: 7.8in;
+      margin-bottom: 8mm;
+    }
+    .scores {
+      font-size: 10.8pt;
+      line-height: 1.55;
+      color: rgba(255,255,255,0.84);
+      padding: 4mm 5mm;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      max-width: 7.8in;
+    }
+    .right { justify-content: space-between; }
+    .traits-title {
+      font-size: 12pt;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.84);
+      margin-bottom: 4mm;
+    }
+    .traits {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10mm;
+    }
+    .pdf-pill {
+      display: inline-block;
+      padding: 9px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.18);
+      font-size: 11pt;
+      font-weight: 700;
+    }
+    .site-box {
+      margin-top: auto;
+      padding: 5mm 6mm;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+    .site-label {
+      font-size: 10pt;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.78);
+      font-weight: 800;
+      margin-bottom: 2mm;
+    }
+    .site-link {
+      font-size: 16pt;
+      font-weight: 900;
+      color: #ffffff;
+      text-decoration: none;
+      word-break: break-word;
+    }
+    .help {
+      position: fixed;
+      top: 12px;
+      right: 16px;
+      background: rgba(0,0,0,0.18);
+      color: white;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    @media print { .help { display: none; } }
+  </style>
+</head>
+<body>
+  <div class="help">Use Print → Save as PDF</div>
+  <div class="page">
+    <div class="card">
+      <div class="left">
+        <div class="kicker">Researcher Personality Type</div>
+        <div class="title">${escapeXml(shareCardTitle.textContent || '')}</div>
+        <div class="code">${escapeXml(shareCardCode.textContent || '')}</div>
+        <div class="description">${escapeXml(shareCardDescription.textContent || '')}</div>
+        <div class="scores">${escapeXml(scoreLine)}</div>
+      </div>
+      <div class="right">
+        <div>
+          <div class="traits-title">Your Traits</div>
+          <div class="traits">${traitPills}</div>
+        </div>
+        <div class="site-box">
+          <div class="site-label">Take the quiz</div>
+          <a class="site-link" href="https://www.ResearcherPersonalityType.com">www.ResearcherPersonalityType.com</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    window.addEventListener('load', function () {
+      setTimeout(function () { window.print(); }, 250);
+    });
+  <\/script>
+</body>
+</html>`;
+
+      printWindow.document.open();
+      printWindow.document.write(pdfHtml);
+      printWindow.document.close();
+    }
+
+    function escapeXml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&apos;');
+    }
+
+    function retakeQuiz() {
+      closeShareCard();
+      answers = new Array(questions.length).fill(null);
+      currentQuestion = 0;
+      resultsScreen.classList.remove('active');
+      startScreen.classList.add('active');
+      learnScreen.classList.remove('active');
+      progressFill.style.width = '0%';
+    }
+  </script>
+</body>
+</html>
