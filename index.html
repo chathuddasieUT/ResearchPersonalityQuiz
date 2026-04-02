@@ -1021,7 +1021,7 @@
         };
         
         item.innerHTML = `
-          <strong>${axisLabels[axis]} — ${data.dominant}</strong>
+          <strong>${axisLabels[axis]}: ${data.dominant}</strong>
           <span>${genericDescriptions[data.dominant]} Strength on this side: ${Math.round((data.displayStrength / 5) * 100)}%.</span>
         `;
         traitList.appendChild(item);
