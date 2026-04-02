@@ -1017,9 +1017,18 @@
           specialization: 'Specialization Style'
         };
         
+        const percent = Math.round((data.displayStrength / 5) * 100);
+
+        let strengthText;
+        if (percent === 0) {
+          strengthText = 'However, you are balanced and can adapt between both styles.';
+        } else {
+          strengthText = `Strength on this side: ${percent}%.`;
+        }
+
         item.innerHTML = `
           <strong>${axisLabels[axis]}: ${data.dominant}</strong>
-          <span>${genericDescriptions[data.dominant]} Strength on this side: ${Math.round((data.displayStrength / 5) * 100)}%.</span>
+          <span>${genericDescriptions[data.dominant]} ${strengthText}</span>
         `;
         traitList.appendChild(item);
       });
@@ -1032,9 +1041,15 @@
       //   altTypes.appendChild(item);
       // });
 
-      const summaryPieces = Object.entries(axisResults).map(
-        ([, data]) => `${data.dominant} over ${data.opposite} (${Math.round((data.displayStrength / 5) * 100)}%)`
-      );
+      const summaryPieces = Object.entries(axisResults).map(([, data]) => {
+        const percent = Math.round((data.displayStrength / 5) * 100);
+
+        if (percent === 0) {
+          return `Balanced between ${data.dominant} and ${data.opposite}`;
+        }
+
+        return `${data.dominant} over ${data.opposite} (${percent}%)`;
+      });
       scoreSummary.textContent = `Your profile leans toward: ${summaryPieces.join(' • ')}.`;
 
       renderShareCard(best, axisResults);
