@@ -1022,10 +1022,14 @@
         let strengthText;
         if (percent === 0) {
           strengthText = 'However, you are balanced and can adapt between both styles.';
+        } else if (percent < 40) {
+          strengthText = `You show a slight preference for this style (${percent}%).`;
+        } else if (percent < 70) {
+          strengthText = `You lean toward this style (${percent}%).`;
         } else {
-          strengthText = `Strength on this side: ${percent}%.`;
+          strengthText = `You strongly prefer this style (${percent}%).`;
         }
-
+        
         item.innerHTML = `
           <strong>${axisLabels[axis]}: ${data.dominant}</strong>
           <span>${genericDescriptions[data.dominant]} ${strengthText}</span>
