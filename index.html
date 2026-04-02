@@ -544,7 +544,7 @@
 
         <div class="foot-actions">
           <button class="button button-secondary" id="shareCardButton">Open Share Card</button>
-          <button class="button button-secondary" id="downloadCardButton">Save Share Card as PDF</button>
+          <!-- <button class="button button-secondary" id="downloadCardButton">Save Share Card as PDF</button> -->
           <button class="button button-primary" id="retakeButton">Retake Quiz</button>
         </div>
 
@@ -566,7 +566,7 @@
                 <div class="share-site"><a href="https://www.ResearcherPersonalityType.com" target="_blank" rel="noopener noreferrer">Take the quiz at www.ResearcherPersonalityType.com</a></div>
               </div>
             </div>
-            <p class="small-note">Use the PDF button to open your result card, then choose Print → Save as PDF in your browser.</p>
+            <!-- <p class="small-note">Use the PDF button to open your result card, then choose Print → Save as PDF in your browser.</p> -->
           </div>
         </div>
       </div>
@@ -1011,10 +1011,21 @@
         : 'Your profile reflects how you balance planning, reading, experimentation, publication, and specialization as a researcher.';
 
       traitList.innerHTML = '';
-      Object.entries(axisResults).forEach(([, data]) => {
+      Object.entries(axisResults).forEach(([axis, data]) => {
         const item = document.createElement('div');
         item.className = 'trait-item';
-        item.innerHTML = `<strong>${data.dominant}</strong><span>${genericDescriptions[data.dominant]} Strength on this side: ${Math.round((data.displayStrength / 5) * 100)}%.</span>`;
+        const axisLabels = {
+          planning: 'Planning Style',
+          reading: 'Reading Style',
+          experiments: 'Experimentation Style',
+          publication: 'Publication Style',
+          specialization: 'Specialization Style'
+        };
+        
+        item.innerHTML = `
+          <strong>${axisLabels[axis]} — ${data.dominant}</strong>
+          <span>${genericDescriptions[data.dominant]} Strength on this side: ${Math.round((data.displayStrength / 5) * 100)}%.</span>
+        `;
         traitList.appendChild(item);
       });
 
@@ -1046,7 +1057,7 @@
       shareCardDescription.textContent = description;
       shareCardTraits.innerHTML = '';
 
-      Object.entries(axisResults).forEach(([, data]) => {
+      Object.entries(axisResults).forEach(([axis, data]) => {
         const pill = document.createElement('div');
         pill.className = 'share-trait-pill';
         pill.textContent = `${data.dominant} ${Math.round((data.displayStrength / 5) * 100)}%`;
