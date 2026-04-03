@@ -230,10 +230,10 @@
     .scale-option input[data-strength="5"] { background: rgba(255,255,255,1.00); }
 
     .scale-option label {
-      font-size: 0.88rem;
-      color: transparent;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.7);
+      height: auto;
       user-select: none;
-      height: 0;
       overflow: hidden;
       pointer-events: none;
     }
@@ -546,8 +546,6 @@
         <p class="small-note" id="scoreSummary"></p>
 
         <div class="foot-actions">
-          <!-- <button class="button button-secondary" id="shareCardButton">Open Share Card</button> -->
-          <!-- <button class="button button-secondary" id="downloadCardButton">Save Share Card as PDF</button> -->
           <button class="button button-primary" id="retakeButton">Retake Quiz</button>
         </div>
 
@@ -569,7 +567,6 @@
                 <div class="share-site"><a href="https://researcherpersonalitystylequiz.netlify.app/" target="_blank" rel="noopener noreferrer">Take the quiz at researcherpersonalitystylequiz.netlify.app</a></div>
               </div>
             </div>
-            <!-- <p class="small-note">Use the PDF button to open your result card, then choose Print → Save as PDF in your browser.</p> -->
           </div>
         </div>
       </div>
@@ -578,31 +575,24 @@
 
   <script>
     const questions = [
-      { id: 'plan_1', axis: 'planning', category: 'Planning Style', text: 'When starting a new research project, where do you naturally fall?', left: 'Plan everything first', right: 'Start quickly and adapt as I go' },
-      { id: 'plan_2', axis: 'planning', category: 'Planning Style', text: 'If a project feels unclear, what is your instinct?', left: 'Define structure before acting', right: 'Jump in and learn by doing' },
-      { id: 'plan_3', axis: 'planning', category: 'Planning Style', text: 'Which workflow feels more like you?', left: 'Structured and pre-thought', right: 'Flexible and evolving' },
-      { id: 'plan_4', axis: 'planning', category: 'Planning Style', text: 'What makes you feel more comfortable?', left: 'Knowing the path ahead', right: 'Exploring without a fixed path' },
-      { id: 'plan_5', axis: 'planning', category: 'Planning Style', text: 'When things go wrong, what do you lean toward?', left: 'Rework the plan', right: 'Try a new direction immediately' },
+      { id: 'plan_1', axis: 'planning', category: 'Planning Style', text: 'When starting a new research project, where do you naturally fall?', left: 'Define structure before acting', right: 'Start quickly and adapt as I go' },
+      { id: 'spec_5', axis: 'specialization', category: 'Specialization Style', text: 'Your long-term research aim is closer to:', left: 'Master a specific field', right: 'Connect ideas across fields' },
       { id: 'read_1', axis: 'reading', category: 'Reading Style', text: 'When reviewing literature, where do you usually land?', left: 'Read many papers briefly', right: 'Read a few papers deeply' },
-      { id: 'read_2', axis: 'reading', category: 'Reading Style', text: 'Which kind of reading feels more productive?', left: 'Broad overview of many ideas', right: 'Deep understanding of a few ideas' },
-      { id: 'read_3', axis: 'reading', category: 'Reading Style', text: 'What best describes your reading habit?', left: 'Constant scanning for useful ideas', right: 'Intensive focus on selected papers' },
-      { id: 'read_4', axis: 'reading', category: 'Reading Style', text: 'When you find a relevant paper, what do you do?', left: 'Extract the key point and move on', right: 'Study methods, results, and details carefully' },
-      { id: 'read_5', axis: 'reading', category: 'Reading Style', text: 'You feel most prepared when you:', left: 'Cover a wide range of work', right: 'Master a small set of important work' },
-      { id: 'exp_1', axis: 'experiments', category: 'Experimentation Style', text: 'In research, what do you naturally emphasize?', left: 'Run many experiments', right: 'Analyze fewer experiments more deeply' },
-      { id: 'exp_2', axis: 'experiments', category: 'Experimentation Style', text: 'When results are unclear, you usually:', left: 'Generate more results', right: 'Spend longer interpreting what you have' },
-      { id: 'exp_3', axis: 'experiments', category: 'Experimentation Style', text: 'Which approach fits you better?', left: 'Fast trial-and-error iteration', right: 'Careful reasoning and evaluation' },
-      { id: 'exp_4', axis: 'experiments', category: 'Experimentation Style', text: 'What gives you more satisfaction?', left: 'Creating new results', right: 'Understanding why results happened' },
-      { id: 'exp_5', axis: 'experiments', category: 'Experimentation Style', text: 'If time is limited, you are more likely to:', left: 'Try more ideas', right: 'Analyze current results more' },
-      { id: 'pub_1', axis: 'publication', category: 'Publication Style', text: 'Which publication style feels more natural?', left: 'Publish quickly and iterate', right: 'Publish slowly with strong polish' },
-      { id: 'pub_2', axis: 'publication', category: 'Publication Style', text: 'Your ideal paper is:', left: 'Timely and useful even if imperfect', right: 'Thorough and polished even if slower' },
-      { id: 'pub_3', axis: 'publication', category: 'Publication Style', text: 'When a result is “good enough,” what do you usually do?', left: 'Move toward publishing', right: 'Keep refining' },
-      { id: 'pub_4', axis: 'publication', category: 'Publication Style', text: 'Which statement feels more like you?', left: 'Done is better than perfect', right: 'Quality matters more than speed' },
-      { id: 'pub_5', axis: 'publication', category: 'Publication Style', text: 'You feel best when:', left: 'You have several outputs moving', right: 'Each output is highly refined' },
-      { id: 'spec_1', axis: 'specialization', category: 'Specialization Style', text: 'How are your research interests usually distributed?', left: 'Deeply focused on one area', right: 'Spread across multiple areas' },
+      { id: 'spec_3', axis: 'specialization', category: 'Specialization Style', text: 'How do you prefer to collaborate in research?', left: 'Contribute across many projects with smaller roles', right: 'Focus on independent work with few collaborators' },
+      { id: 'exp_2', axis: 'experiments', category: 'Experimentation Style', text: 'When results are unclear, you usually:', left: 'Run variations and generate more results', right: 'Spend longer interpreting what you have' },
       { id: 'spec_2', axis: 'specialization', category: 'Specialization Style', text: 'What goal fits you better?', left: 'Become an expert in one niche', right: 'Be capable across many domains' },
-      { id: 'spec_3', axis: 'specialization', category: 'Specialization Style', text: 'Which best describes your curiosity?', left: 'Deep and narrow', right: 'Broad and wide-ranging' },
-      { id: 'spec_4', axis: 'specialization', category: 'Specialization Style', text: 'You feel more energized when:', left: 'Going deeper into the same topic', right: 'Exploring a new topic' },
-      { id: 'spec_5', axis: 'specialization', category: 'Specialization Style', text: 'Your long-term research aim is closer to:', left: 'Master a specific field', right: 'Connect ideas across fields' }
+      { id: 'pub_2', axis: 'publication', category: 'Publication Style', text: 'Your ideal paper is:', left: 'Timely and useful even if imperfect', right: 'Thorough and polished even if slower' },
+      { id: 'exp_4', axis: 'experiments', category: 'Experimentation Style', text: 'What gives you more satisfaction?', left: 'Creating new results', right: 'Understanding why results happened' },
+      { id: 'read_3', axis: 'reading', category: 'Reading Style', text: 'What best describes your reading habit?', left: 'Constant scanning for useful ideas', right: 'Intensive focus on selected papers' },
+      { id: 'pub_1', axis: 'publication', category: 'Publication Style', text: 'Which publication style feels more natural?', left: 'Publish quickly and iterate', right: 'Publish slowly with strong polish' },
+      { id: 'pub_5', axis: 'publication', category: 'Publication Style', text: 'You feel best when:', left: 'You have several outputs moving', right: 'Each output is highly refined' },      
+      { id: 'plan_5', axis: 'planning', category: 'Planning Style', text: 'When things go wrong, what do you lean toward?', left: 'Rework the plan', right: 'Try a new direction immediately' },
+      { id: 'spec_1', axis: 'specialization', category: 'Specialization Style', text: 'How are your research interests usually distributed?', left: 'Deeply focused on one area', right: 'Spread across multiple areas' },
+      { id: 'pub_4', axis: 'publication', category: 'Publication Style', text: 'Which statement feels more like you?', left: 'Done is better than perfect', right: 'Quality matters more than speed' },
+      { id: 'plan_4', axis: 'planning', category: 'Planning Style', text: 'What makes you feel more comfortable?', left: 'Knowing the path ahead', right: 'Exploring without a fixed path' },
+      { id: 'read_4', axis: 'reading', category: 'Reading Style', text: 'When you find a relevant paper, what do you do?', left: 'Extract the key point and move on', right: 'Study methods, results, and details carefully' },
+      { id: 'exp_3', axis: 'experiments', category: 'Experimentation Style', text: 'Which approach fits you better?', left: 'Fast trial-and-error iteration', right: 'Careful reasoning and evaluation' },
+      { id: 'spec_4', axis: 'specialization', category: 'Specialization Style', text: 'You feel more energized when:', left: 'Going deeper into the same topic', right: 'Exploring a new topic' }
     ];
 
     const axes = {
@@ -618,57 +608,29 @@
         title: 'The Strategic Builder',
         description: 'You like clear structure, but within that structure you move fast, test often, and build momentum across a broad range of topics.'
       },
-      'A-S-T-L-F': {
-        title: 'The Systematic Prototyper',
-        description: 'You plan broad experiments with a narrow goal. You iterate quickly to find the single best solution within a structured framework.'
+      'A-D-T-L-P': {
+        title: 'The Strategic Builder',
+        description: 'You like clear structure, but within that structure you move fast, test often, and build momentum across a broad range of topics.'
       },
       'A-S-T-C-P': {
-        title: 'The Master Planner',
+        title: 'The Technical Polymath',
         description: 'You map out wide-ranging projects with meticulous detail, testing possibilities thoroughly before producing a polished, multi-faceted result.'
-      },
-      'A-S-T-C-F': {
-        title: 'The Precision Architect',
-        description: 'You design comprehensive plans for specialized problems, testing every variable to ensure the final, focused output is flawless.'
-      },
-      'A-S-I-L-P': {
-        title: 'The Theoretical Mapmaker',
-        description: 'You plan broad surveys of literature and data, extracting high-level meaning quickly to stay ahead of emerging trends across fields.'
-      },
-      'A-S-I-L-F': {
-        title: 'The Targeted Synthesizer',
-        description: 'You use a structured approach to scan wide sources, interpreting them quickly to solve a specific, high-stakes problem.'
-      },
-      'A-S-I-C-P': {
-        title: 'The Curated Polymath',
-        description: 'You enjoy the slow, deliberate process of gathering a vast library of ideas and weaving them into a refined, comprehensive worldview.'
-      },
-      'A-S-I-C-F': {
-        title: 'The Detailed Generalist',
-        description: 'You apply a structured, interpretative lens to a wide array of data, refining it until you’ve reached a polished conclusion on a specific topic.'
-      },
-      'A-D-T-L-P': {
-        title: 'The Versatile Deep-Diver',
-        description: 'You plan deep investigations but keep them experimental, moving quickly between different profound topics to see how they connect.'
-      },
-      'A-D-T-L-F': {
-        title: 'The Direct Experimentalist',
-        description: 'You focus on a single deep niche with a clear plan, using rapid testing to push the boundaries of what is known in your specialty.'
       },
       'A-D-T-C-P': {
         title: 'The Technical Polymath',
-        description: 'You balance disciplined planning with active empirical testing. You care about depth and quality while connecting specialized dots.'
-      },
-      'A-D-T-C-F': {
-        title: 'The Precision Investigator',
-        description: 'You balance disciplined planning with active empirical testing. You care about depth and quality while still valuing concrete evidence.'
+        description: 'You map out wide-ranging projects with meticulous detail, testing possibilities thoroughly before producing a polished, multi-faceted result.'
       },
       'A-D-I-L-P': {
         title: 'The Conceptual Explorer',
-        description: 'You plan deep dives into various theories, interpreting their meaning quickly to find the next big "aha" moment across disciplines.'
+        description: 'You plan broad surveys of literature and data, extracting high-level meaning quickly to stay ahead of emerging trends across fields.'
+      },      
+      'A-S-I-L-P': {
+        title: 'The Conceptual Explorer',
+        description: 'You plan broad surveys of literature and data, extracting high-level meaning quickly to stay ahead of emerging trends across fields.'
       },
-      'A-D-I-L-F': {
-        title: 'The Focused Theorist',
-        description: 'You prefer a structured, deep, and rapid interpretation of specific data, aiming to get your specialized insights into the world efficiently.'
+      'A-S-I-C-P': {
+        title: 'The Universal Scholar',
+        description: 'You value deep, structured thought and careful interpretation across many fields, aiming for a "Magnum Opus" that connects them all.'
       },
       'A-D-I-C-P': {
         title: 'The Universal Scholar',
@@ -676,70 +638,98 @@
       },
       'A-D-I-C-F': {
         title: 'The Methodical Scholar',
-        description: 'You prefer thoughtful structure, deep reading, and careful interpretation. You are likely to produce rigorous work with a strong sense of depth, polish, and intellectual precision.'
+        description: 'You apply a structured, interpretative lens to a wide array of data, refining it until you’ve reached a polished conclusion on a specific topic.'
+      },
+      'A-S-I-C-F': {
+        title: 'The Methodical Scholar',
+        description: 'You apply a structured, interpretative lens to a wide array of data, refining it until you’ve reached a polished conclusion on a specific topic.'
+      },
+      'A-D-T-L-F': {
+        title: 'The Systematic Prototyper',
+        description: 'You plan broad experiments with a narrow goal. You iterate quickly to find the single best solution within a structured framework.'
+      },
+      'A-S-T-L-F': {
+        title: 'The Systematic Prototyper',
+        description: 'You plan broad experiments with a narrow goal. You iterate quickly to find the single best solution within a structured framework.'
+      },
+      'A-D-T-C-F': {
+        title: 'The Precision Investigator',
+        description: 'You design comprehensive plans for specialized problems, testing every variable to ensure the final, focused output is flawless.'
+      },
+      'A-S-T-C-F': {
+        title: 'The Precision Investigator',
+        description: 'You design comprehensive plans for specialized problems, testing every variable to ensure the final, focused output is flawless.'
+      },
+      'A-D-I-L-F': {
+        title: 'The Focused Theorist',
+        description: 'You prefer a structured, deep, and rapid interpretation of specific data, aiming to get your specialized insights into the world efficiently.'
+      },
+      'A-S-I-L-F': {
+        title: 'The Focused Theorist',
+        description: 'You prefer a structured, deep, and rapid interpretation of specific data, aiming to get your specialized insights into the world efficiently.'
       },
       'E-S-T-L-P': {
         title: 'The Rapid Explorer',
         description: 'You thrive on motion, discovery, and breadth. You learn by doing, scan widely for ideas, and move quickly from one promising direction to the next.'
       },
-      'E-S-T-L-F': {
-        title: 'The Focused Scout',
-        description: 'You move fast and test ideas broadly, but always with the aim of finding a breakthrough for one specific, narrow problem.'
-      },
-      'E-S-T-C-P': {
-        title: 'The Experimental Polymath',
-        description: 'You learn by doing across many fields, but you don’t stop until the diverse experiments are refined into a high-quality, finished product.'
-      },
-      'E-S-T-C-F': {
-        title: 'The Refined Auditor',
-        description: 'You scan broadly for errors and test possibilities in real-time, focusing your energy on perfecting one specific, high-quality outcome.'
-      },
-      'E-S-I-L-P': {
-        title: 'The Agile Synthesist',
-        description: 'You range widely, connect ideas quickly, and synthesize patterns under uncertainty. You are especially strong in fast-moving, interdisciplinary work.'
-      },
-      'E-S-I-L-F': {
-        title: 'The Responsive Analyst',
-        description: 'You adapt your wide search as you go, interpreting data quickly to provide immediate, specialized answers to pressing questions.'
-      },
-      'E-S-I-C-P': {
-        title: 'The Holistic Curator',
-        description: 'You gather ideas from everywhere and take the time to interpret how they fit together into a beautiful, complete, and broad narrative.'
-      },
-      'E-S-I-C-F': {
-        title: 'The Interpretative Specialist',
-        description: 'You scan wide-ranging ideas and adapt your path, but ultimately focus on refining a singular, deep, and polished piece of interpretive work.'
-      },
       'E-D-T-L-P': {
-        title: 'The Kinetic Generalist',
-        description: 'You dive deep into a topic through action, testing ideas rapidly before moving your momentum toward a new, equally deep area.'
+        title: 'The Rapid Explorer',
+        description: 'You thrive on motion, discovery, and breadth. You learn by doing, scan widely for ideas, and move quickly from one promising direction to the next.'
+      },
+      'E-S-T-L-F': {
+        title: 'The Probing Specialist',
+        description: 'You immerse yourself in a niche, learning through trial and error. You value getting functional, deep results out the door as fast as possible.'
       },
       'E-D-T-L-F': {
         title: 'The Probing Specialist',
         description: 'You immerse yourself in a niche, learning through trial and error. You value getting functional, deep results out the door as fast as possible.'
       },
-      'E-D-T-C-P': {
-        title: 'The Intensive Craftsman',
-        description: 'You take an adaptive approach to deep problems, testing many paths but ultimately settling on a refined, multi-layered finished product.'
-      },
+      'E-S-T-C-F': {
+        title: 'The Dedicated Optimizer',
+        description: 'You go deep into one area, testing and re-testing through practice until you have crafted the most refined version of your specific vision.'
+      },      
       'E-D-T-C-F': {
         title: 'The Dedicated Optimizer',
         description: 'You go deep into one area, testing and re-testing through practice until you have crafted the most refined version of your specific vision.'
       },
-      'E-D-I-L-P': {
-        title: 'The Intuitive Connector',
-        description: 'You dive deep into new ideas as they arise, interpreting their meaning on the fly and sharing those insights quickly with a broad audience.'
-      },
-      'E-D-I-L-F': {
-        title: 'The Insight Hunter',
+      'E-S-I-L-F': {
+        title: 'The Responsive Analyst',
         description: 'You enter problems with openness, then go very deep. Your strength is turning ambiguity into nuanced understanding and rapid results.'
+      },      
+      'E-D-I-L-F': {
+        title: 'The Responsive Analyst',
+        description: 'You enter problems with openness, then go very deep. Your strength is turning ambiguity into nuanced understanding and rapid results.'
+      },  
+      'E-S-I-C-P': {
+        title: 'The Philosophical Nomad',
+        description: 'You gather ideas from everywhere and take the time to interpret how they fit together into a beautiful, complete, and broad narrative.'
       },
       'E-D-I-C-P': {
         title: 'The Philosophical Nomad',
-        description: 'You dive into profound topics without a map, taking the time to interpret and refine your thoughts into a broad, polished body of work.'
+        description: 'You gather ideas from everywhere and take the time to interpret how they fit together into a beautiful, complete, and broad narrative.'
+      },
+      'E-D-T-C-P': {
+        title: 'The Experimental Polymath',
+        description: 'You take an adaptive approach to deep problems, testing many paths but ultimately settling on a refined, multi-layered finished product.'
+      },      
+      'E-S-T-C-P': {
+        title: 'The Experimental Polymath',
+        description: 'You take an adaptive approach to deep problems, testing many paths but ultimately settling on a refined, multi-layered finished product.'
+      },
+      'E-D-I-L-P': {
+        title: 'The Agile Synthesist',
+        description: 'You range widely, connect ideas quickly, and synthesize patterns under uncertainty. You are especially strong in fast-moving, interdisciplinary work.'
+      },  
+      'E-S-I-L-P': {
+        title: 'The Agile Synthesist',
+        description: 'You range widely, connect ideas quickly, and synthesize patterns under uncertainty. You are especially strong in fast-moving, interdisciplinary work.'
+      },  
+      'E-S-I-C-F': {
+        title: 'The Interpretative Specialist',
+        description: 'You dive deep into one area with an adaptive mindset, interpreting findings slowly and refining them until the work is exceptionally strong.'
       },
       'E-D-I-C-F': {
-        title: 'The Patient Specialist',
+        title: 'The Interpretative Specialist',
         description: 'You dive deep into one area with an adaptive mindset, interpreting findings slowly and refining them until the work is exceptionally strong.'
       }
     };
@@ -891,7 +881,7 @@
 
     function renderQuestion() {
       const q = questions[currentQuestion];
-      questionNumber.textContent = q.category;
+      questionNumber.textContent = '';
       questionText.textContent = q.text;
       leftAnchor.textContent = q.left;
       rightAnchor.textContent = q.right;
@@ -918,7 +908,8 @@
 
         const label = document.createElement('label');
         label.setAttribute('for', input.id);
-        label.textContent = i;
+        // label.textContent = i;
+        label.textContent = Math.abs(i - 5);
 
         option.appendChild(input);
         option.appendChild(label);
@@ -1040,13 +1031,6 @@
         traitList.appendChild(item);
       });
 
-      // altTypes.innerHTML = '';
-      // allTypes.forEach((type) => {
-      //   const item = document.createElement('div');
-      //   item.className = 'alt-type-item';
-      //   item.innerHTML = `<strong>${type.title}</strong><span>${type.code}</span>`;
-      //   altTypes.appendChild(item);
-      // });
 
       const summaryPieces = Object.entries(axisResults).map(([, data]) => {
         const percent = Math.round((data.displayStrength / 5) * 100);
@@ -1116,7 +1100,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>${escapeXml(shareCardTitle.textContent || 'Researcher Personality Type')}</title>
   <style>
-    // @page { size: A4 landscape; margin: 0; }
     @page {
       size: auto;
       margin: 12mm;
@@ -1136,15 +1119,6 @@
       align-items: center;
       justify-content: center;
     }
-    // .page {
-    //   width: 297mm;
-    //   height: 210mm;
-    //   background: linear-gradient(135deg, #0a4fbf 0%, #1567e5 45%, #0b57d0 100%);
-    //   padding: 16mm;
-    //   display: flex;
-    //   align-items: stretch;
-    //   justify-content: center;
-    // }
     .page {
       width: 100%;
       height: auto;
