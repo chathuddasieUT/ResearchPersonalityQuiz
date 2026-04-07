@@ -432,6 +432,41 @@
       color: #ffffff;
       text-decoration: none;
     }
+    .learn-modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 40;
+    }
+
+    .learn-modal.open {
+      display: flex;
+    }
+
+    .learn-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(4, 16, 40, 0.52);
+      backdrop-filter: blur(8px);
+    }
+
+    .learn-panel {
+      position: relative;
+      z-index: 1;
+      width: min(100%, 860px);
+      max-height: 90vh;
+      overflow: hidden;
+    }
+
+    @media (max-width: 760px) {
+      .learn-panel {
+        width: 100%;
+        max-height: 92vh;
+      }
+    }
 
     @media (max-width: 760px) {
       .app { padding: 24px 14px 40px; }
@@ -626,28 +661,145 @@
 
         <div class="foot-actions">
           <button class="button button-primary" id="retakeButton">Retake Quiz</button>
+          <button class="button button-secondary" id="learnModalButton">How to interpret your results</button>
         </div>
 
         <div class="share-card-modal" id="shareCardModal" aria-hidden="true">
-          <div class="share-card-backdrop" id="shareCardBackdrop"></div>
-          <div class="share-card-panel card">
-            <div class="top-row" style="margin-bottom: 18px;">
-              <h3>Result Card</h3>
-              <button class="button button-secondary" id="closeShareCardButton">Close</button>
-            </div>
-            <div class="share-card" id="shareCard">
-              <div class="share-card-inner">
-                <div class="share-kicker">Researcher Personality Type</div>
-                <div class="share-title" id="shareCardTitle"></div>
-                <div class="share-code" id="shareCardCode"></div>
-                <div class="share-description" id="shareCardDescription"></div>
-                <div class="share-traits" id="shareCardTraits"></div>
-                <div class="share-scores" id="shareCardScores"></div>
-                <div class="share-site"><a href="https://researcherpersonalitystylequiz.netlify.app/" target="_blank" rel="noopener noreferrer">Take the quiz at researcherpersonalitystylequiz.netlify.app</a></div>
+        <div class="share-card-backdrop" id="shareCardBackdrop"></div>
+        <div class="share-card-panel card">
+          <div class="top-row" style="margin-bottom: 18px;">
+            <h3>Result Card</h3>
+            <button class="button button-secondary" id="closeShareCardButton">Close</button>
+          </div>
+          <div class="share-card" id="shareCard">
+            <div class="share-card-inner">
+              <div class="share-kicker">Researcher Personality Type</div>
+              <div class="share-title" id="shareCardTitle"></div>
+              <div class="share-code" id="shareCardCode"></div>
+              <div class="share-description" id="shareCardDescription"></div>
+              <div class="share-traits" id="shareCardTraits"></div>
+              <div class="share-scores" id="shareCardScores"></div>
+              <div class="share-site">
+                <a href="https://researcherpersonalitystylequiz.netlify.app/" target="_blank" rel="noopener noreferrer">
+                  Take the quiz at researcherpersonalitystylequiz.netlify.app
+                </a>
               </div>
             </div>
           </div>
         </div>
+      </div>
+
+      <div class="learn-modal" id="learnModal" aria-hidden="true">
+        <div class="learn-backdrop" id="learnBackdrop"></div>
+
+        <div class="learn-panel card">
+          <div class="top-row" style="margin-bottom: 18px;">
+            <h3>Understanding researcher personalities</h3>
+            <button class="button button-secondary" id="closeLearnModal">Close</button>
+          </div>
+
+          <div style="max-height:70vh; overflow:auto; padding-right:6px;">
+            <p style="margin-bottom:16px;">
+              The questions are designed to explore five key dimensions of how you approach research: <strong>Planning Style</strong>, <strong>Reading Style</strong>, <strong>Experimentation Style</strong>, <strong>Publication Style</strong>, and <strong>Specialization Style</strong>.
+            </p>
+
+            <p style="margin-bottom:16px;">
+              Each question presents a range between two approaches. When you select a point on the scale, it contributes to a score for that category. Your responses are averaged within each dimension to determine where you naturally lean. These tendencies are then combined to form a single “research personality” that reflects your overall working style.
+            </p>
+
+            <p style="margin-bottom:16px;">
+              It is important to note that both sides of each dimension are valuable. Research thrives on different styles, from careful planning to exploration, and from deep focus to broad scanning. Most people tend to lean one way, but strong researchers are often able to adapt depending on the situation.
+            </p>
+
+            <p style="margin-bottom:16px;">
+              This also matters when choosing a lab or mentor. Success often depends on how well your working style fits the environment.
+            </p>
+
+            <p style="margin-bottom:22px;">
+              Use this as a guide, not a rule. What matters most is the science. If the work excites you, pursue it, while staying aware of how you and your environment work together.
+            </p>
+
+            <div style="
+              margin-top: 8px;
+              margin-bottom: 18px;
+              padding: 16px 18px;
+              border-radius: 18px;
+              background: rgba(255,255,255,0.08);
+              border: 1px solid rgba(255,255,255,0.14);
+            ">
+              <h3 style="margin:0 0 10px 0; font-size:1.1rem;">How the scoring works</h3>
+              <p style="margin:0; color:rgba(255,255,255,0.88);">
+                Each category is measured through multiple questions. Your answers are averaged to estimate where you fall between two contrasting styles. The five resulting tendencies are then combined into a single personality type. These are not fixed labels, but simple summaries of how you may prefer to work.
+              </p>
+            </div>
+
+            <h3 style="margin-top:20px; margin-bottom:14px;">Research Personality Dimensions</h3>
+
+            <div style="display:grid; gap:14px;">
+              <div style="
+                padding:14px 16px;
+                border-radius:16px;
+                background: rgba(255,255,255,0.08);
+                border: 1px solid rgba(255,255,255,0.14);
+              ">
+                <strong style="display:block; margin-bottom:6px;">Planning Style</strong>
+                <span><strong>Architect</strong> prefers structure, planning ahead, and defining the path before acting. <br><strong>Explorer</strong> prefers flexibility, adapts quickly, and learns by doing.</span>
+              </div>
+
+              <div style="
+                padding:14px 16px;
+                border-radius:16px;
+                background: rgba(255,255,255,0.08);
+                border: 1px solid rgba(255,255,255,0.14);
+              ">
+                <strong style="display:block; margin-bottom:6px;">Reading Style</strong>
+                <span><strong>Scanner</strong> prefers breadth, quick exposure to many papers, and identifying useful ideas across the literature.<br> <strong>Diver</strong> prefers depth, close reading, and spending more time with fewer papers.</span>
+              </div>
+
+              <div style="
+                padding:14px 16px;
+                border-radius:16px;
+                background: rgba(255,255,255,0.08);
+                border: 1px solid rgba(255,255,255,0.14);
+              ">
+                <strong style="display:block; margin-bottom:6px;">Experimentation Style</strong>
+                <span><strong>Tinkerer</strong> prefers fast iteration, trial and error, and learning through hands-on testing. <br><strong>Interpreter</strong> prefers careful analysis, extracting meaning from results, and understanding what is happening before moving on.</span>
+              </div>
+
+              <div style="
+                padding:14px 16px;
+                border-radius:16px;
+                background: rgba(255,255,255,0.08);
+                border: 1px solid rgba(255,255,255,0.14);
+              ">
+                <strong style="display:block; margin-bottom:6px;">Publication Style</strong>
+                <span><strong>Launcher</strong> prefers speed, momentum, and publishing useful work in an iterative way.<br> <strong>Craftsman</strong> prefers refinement, polish, and taking more time to produce a stronger final product.</span>
+              </div>
+
+              <div style="
+                padding:14px 16px;
+                border-radius:16px;
+                background: rgba(255,255,255,0.08);
+                border: 1px solid rgba(255,255,255,0.14);
+              ">
+                <strong style="display:block; margin-bottom:6px;">Specialization Style</strong>
+                <span><strong>Focused</strong> prefers depth and concentrated expertise in one area. <br><strong>Polymath</strong> prefers breadth, cross-disciplinary thinking, and connecting ideas across multiple areas.</span>
+              </div>
+            </div>
+
+            <p style="
+              margin-top:18px;
+              font-size:0.78rem;
+              line-height:1.5;
+              color:rgba(255,255,255,0.72);
+              padding:12px 14px;
+              border-radius:14px;
+            ">
+              <strong>Disclaimer:</strong> This tool is intended for self-reflection and is not a formal psychometric assessment. All processing occurs locally in your browser; no responses, identifiers, or results are collected, stored, or transmitted. It is provided for general guidance and should not be used as the sole basis for academic or career decisions.
+            </p>
+          </div>
+        </div>
+      </div>
       </div>
     </section>
   </div>
@@ -857,6 +1009,10 @@
     const shareCardDescription = document.getElementById('shareCardDescription');
     const shareCardTraits = document.getElementById('shareCardTraits');
     const shareCardScores = document.getElementById('shareCardScores');
+    const learnModal = document.getElementById('learnModal');
+    const learnModalButton = document.getElementById('learnModalButton');
+    const closeLearnModal = document.getElementById('closeLearnModal');
+    const learnBackdrop = document.getElementById('learnBackdrop');
 
     document.getElementById('startButton').addEventListener('click', () => {
       startScreen.classList.remove('active');
@@ -880,6 +1036,28 @@
     shareCardBackdrop.addEventListener('click', closeShareCard);
     prevButton.addEventListener('click', goPrevious);
     nextButton.addEventListener('click', goNext);
+
+    learnModalButton.addEventListener('click', () => {
+      learnModal.classList.add('open');
+      learnModal.setAttribute('aria-hidden', 'false');
+    });
+
+    closeLearnModal.addEventListener('click', () => {
+      learnModal.classList.remove('open');
+      learnModal.setAttribute('aria-hidden', 'true');
+    });
+
+    learnBackdrop.addEventListener('click', () => {
+      learnModal.classList.remove('open');
+      learnModal.setAttribute('aria-hidden', 'true');
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        learnModal.classList.remove('open');
+        learnModal.setAttribute('aria-hidden', 'true');
+      }
+    });
 
     function getTypeCode(match) {
       return [
